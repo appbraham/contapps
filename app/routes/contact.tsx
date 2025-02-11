@@ -1,6 +1,5 @@
 import type { IContact } from "~/interfaces/contact";
 import type { Route } from "./+types/contact";
-import ContactTable from "~/components/contact-table";
 import ChipState from "~/components/chip-state";
 import { Form, Link } from "react-router";
 
@@ -12,24 +11,24 @@ export async function clientLoader({ params } : Route.ClientActionArgs) {
 
     if(!response) throw new Response("Contacts not found ", { status: 404 })
 
-    const contacts = await response.json();
+    const contacts:IContact[] = await response.json();
 
     return contacts;
 }
 
 export default function Contact({ loaderData } : Route.ComponentProps) {
 
-    const contactResponse  = loaderData;
-    const contacts = contactResponse as IContact[];
+    const contacts: IContact[] = loaderData;
     
 
     return (
-        <section className="flex flex-col gap-6 items-center justify-center py-4 bg-gray-400/50">
-            <h1 className="text-2xl text-gray-700 font-bold">Contacts</h1>
+        <section className="h-full flex flex-col gap-6 justify-center px-20 bg-gray-400/50">
+           
 
-            
-
-
+            <Link to={"/dashboard/contacts/new"} className="w-fit flex gap-2 items-center rounded-lg border border-indigo-600 bg-indigo-600 px-5 py-2.5 text-center text-sm font-medium text-white shadow-sm transition-all hover:border-indigo-700 hover:bg-indigo-700 focus:ring focus:ring-indigo-200 disabled:cursor-not-allowed disabled:border-indigo-300 disabled:bg-indigo-300">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="#ffffff"><g fill="none" stroke="#ffffff" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"><path d="M12 19V5M5 12h14"/></g></svg>
+                <span>New Contact</span>
+            </Link>
             <div className="overflow-hidden rounded-lg border border-gray-200 shadow-md">
             <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
                 <thead className="bg-gray-50">
@@ -39,6 +38,7 @@ export default function Contact({ loaderData } : Route.ComponentProps) {
                         <th scope="col">Phone</th>
                         <th scope="col">Role</th>
                         <th scope="col">Company</th>
+                        <th scope="col">Rating</th>
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>
@@ -55,7 +55,6 @@ export default function Contact({ loaderData } : Route.ComponentProps) {
                                     <div className="text-sm">
                                         <div className="font-medium text-gray-700">{contact.firstName} {contact.lastName}</div>
                                         <div className="text-gray-400">{contact.email}</div>
-                                        <div className="text-gray-400">{contact.id}</div>
                                     </div>
                                 </td>
                                 <td className="p-4">
@@ -70,6 +69,9 @@ export default function Contact({ loaderData } : Route.ComponentProps) {
                                 <td className="p-4">
                                     <span className="px-2 py-1">{contact.company}</span>                                            
                                 </td>
+                                <td className="p-4">
+                                    <span className="px-2 py-1">{contact.rating}</span>                                            
+                                </td>
                                 <td className="px-6 py-4">
                                     <div className="flex justify-end gap-4">
                                         
@@ -81,22 +83,13 @@ export default function Contact({ loaderData } : Route.ComponentProps) {
                                             <button type="submit" aria-label="Delete contact" className="cursor-pointer">
                                                 <svg fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="h-6 w-6"><path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/></svg>
                                             </button>
-                                        </Form>
-
-                                        <Link state={contact}  to="form" aria-label="Edit contact">
-                                            <svg fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="h-6 w-6"><path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487zm0 0L19.5 7.125"/></svg>
-                                        </Link>
-
-                                        {
-                                            /*   
+                                        </Form>                                       
 
                                         <Form action={`${contact.id}/edit`}>
                                             <button type="submit" aria-label="Edit contact">
                                                 <svg fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="h-6 w-6"><path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487zm0 0L19.5 7.125"/></svg>
                                             </button>
                                         </Form>
-                                                */
-                                            }
                                     </div>
                                 </td>
                             </tr>
@@ -112,7 +105,7 @@ export default function Contact({ loaderData } : Route.ComponentProps) {
 
 
 
-            {/* <ContactTable contacts={contacts.slice(0, 10)} /> */}
+
         </section>
 
     )
