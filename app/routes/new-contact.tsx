@@ -1,4 +1,40 @@
-import { Form, useNavigate } from "react-router";
+import { Form, redirect, useNavigate } from "react-router";
+import type { Route } from "./+types/new-contact";
+
+export async function action({ request } : Route.ActionArgs) {
+
+    const url:string = import.meta.env.VITE_BASE_URL;
+
+    const formData = await request.formData();
+    const newContact = Object.fromEntries(formData);
+
+    const contact = {
+        ...newContact,
+        state: newContact.state === "on" ? true : false
+    }
+
+    console.log("contact :", contact);    
+
+    try {
+
+        const response = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(contact)
+        });
+
+        if(!response.ok){
+            const error = await response.json();
+            throw new Response(error.message, { status: response.status})
+        }
+
+        return redirect("/dashboard/contacts");
+
+    } catch( error ){
+        throw new Response("Error connecting to the server", { status: 500 });
+    }
+
+}
 
 export default function NewContact() {
 
@@ -8,7 +44,7 @@ export default function NewContact() {
         <div>
 
             <h1 className="text-2xl text-center text-gray-700 font-bold  my-12">NEW CONTACT</h1>
-            <Form method="post">
+            <Form method="post" action="/dashboard/contacts/new">
                 <div className="mx-auto max-w-xs space-y-4">
                     <div>
                         <label htmlFor="firstName" className="mb-1 block text-sm font-medium text-gray-700">First Name</label>
@@ -44,7 +80,7 @@ export default function NewContact() {
                     </div>
 
                     <div className="flex items-center justify-between gap-6 pt-4">
-                        <button type="submit" className="cursor-pointer w-full px-5 py-2.5 rounded-lg text-sm font-medium text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300">Save</button>
+                        <button type="submit" className="cursor-pointer w-full px-5 py-2.5 rounded-lg text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-800 focus:ring-4 focus:ring-indigo-300">Save</button>
                         <button type="button" onClick={() => navigate(-1)} className="cursor-pointer w-full px-5 py-2.5 rounded-lg text-sm font-medium text-gray-900 border-gray-200  focus:outline-none bg-white border  hover:bg-gray-100 hover:text-indigo-800 focus:ring-4 focus:ring-gray-100">Cancel</button>
                     </div>
                 </div>

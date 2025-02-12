@@ -94,7 +94,7 @@ export default function EditContact({ loaderData } : Route.ComponentProps) {
                     </div>
 
                     <div className="flex items-center justify-between gap-6 pt-4">
-                        <button type="submit" className="cursor-pointer w-full px-5 py-2.5 rounded-lg text-sm font-medium text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300">{!contact ? "Save" : "Update"}</button>
+                        <button type="submit" className="cursor-pointer w-full px-5 py-2.5 rounded-lg text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-800 focus:ring-4 focus:ring-indigo-300">{!contact ? "Save" : "Update"}</button>
                         <button type="button" onClick={() => navigate(-1)} className="cursor-pointer w-full px-5 py-2.5 rounded-lg text-sm font-medium text-gray-900 border-gray-200  focus:outline-none bg-white border  hover:bg-gray-100 hover:text-indigo-800 focus:ring-4 focus:ring-gray-100">Cancel</button>
                     </div>
                 </div>
